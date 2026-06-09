@@ -57,7 +57,7 @@ const TeamSection = () => {
 
           <div className="member">
             <strong>Huỳnh Anh Tuấn</strong>
-            <span>Khoa học dữ liệu</span>
+            <span>Kỹ thuật phần mềm</span>
           </div>
         </div>
       </div>
