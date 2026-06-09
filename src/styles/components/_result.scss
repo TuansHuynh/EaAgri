@@ -1,6 +1,21 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 
+*, *::before, *::after {
+  box-sizing: border-box; /* Giúp padding và border không làm tăng chiều rộng phần tử */
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden; /* Ngăn chặn triệt để thanh cuộn ngang trên điện thoại */
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto; /* Đảm bảo hình ảnh/video tự co lại khi vào màn hình nhỏ */
+  display: block;
+}
+
 .download__container {
   text-align: center;
 }
