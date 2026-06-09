@@ -42,22 +42,22 @@ const TeamSection = () => {
         <div className="team__members">
           <div className="member">
             <strong>Phan Đăng Huy</strong>
-            <span>Khoa học dữ liệu</span>
+            <span>Khoa học dữ liệu - MSSV: 2311559215</span>
           </div>
 
           <div className="member">
             <strong>Nguyễn Anh Giảng</strong>
-            <span>Khoa học dữ liệu</span>
+            <span>Khoa học dữ liệu - MSSV: 2311558913</span>
           </div>
 
           <div className="member">
             <strong>Đặng Văn Chung</strong>
-            <span>Khoa học dữ liệu</span>
+            <span>Khoa học dữ liệu - MSSV: 2311558913</span>
           </div>
 
           <div className="member">
             <strong>Huỳnh Anh Tuấn</strong>
-            <span>Kỹ thuật phần mềm</span>
+            <span>Kỹ thuật phần mềm - MSSV: 2200005725</span>
           </div>
         </div>
       </div>
