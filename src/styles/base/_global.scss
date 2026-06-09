@@ -1,0 +1,114 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+
+  background: linear-gradient(
+    to bottom,
+    #ffffff,
+    #f8fcf8
+  );
+
+  color: $text-dark;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.section__container {
+  max-width: $max-width;
+
+  margin-inline: auto;
+
+  padding-block: 7rem;
+  padding-inline: 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: $max-width;
+
+  margin-inline: auto;
+
+  padding-inline: 1rem;
+}
+
+.btn {
+  @include button-primary;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.6rem;
+
+  padding: 1rem 1.75rem;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  border-radius: $radius-full;
+
+  box-shadow: $shadow-md;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+
+    box-shadow: $shadow-lg;
+  }
+}
+
+img {
+  display: block;
+
+  max-width: 100%;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+section {
+  position: relative;
+}
+
+::selection {
+  background: rgba($primary-color, 0.2);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f7f3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $primary-color;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $primary-color-dark;
+}
+
+@include tablet {
+  .section__container {
+    padding-block: 3rem;
+  }
+}

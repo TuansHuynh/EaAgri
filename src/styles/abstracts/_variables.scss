@@ -1,0 +1,56 @@
+// ================================
+// COLORS
+// ================================
+
+$primary-color: #43a047;
+$primary-color-dark: #2e7d32;
+$primary-color-light: #81c784;
+
+$text-dark: #1b3323;
+$text-light: #58705f;
+
+$extra-light: #f4faf4;
+$white: #ffffff;
+
+// ================================
+// LAYOUT
+// ================================
+
+$max-width: 1280px;
+
+// ================================
+// BORDER
+// ================================
+
+$radius-sm: 8px;
+$radius-md: 16px;
+$radius-lg: 28px;
+$radius-xl: 36px;
+$radius-full: 999px;
+
+// ================================
+// SHADOW
+// ================================
+
+$shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+$shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+$shadow-lg: 0 20px 45px rgba(0, 0, 0, 0.12);
+
+$shadow-xl: 0 30px 60px rgba(0, 0, 0, 0.15);
+
+// ================================
+// TRANSITION
+// ================================
+
+$transition: all 0.35s ease;
+
+// ================================
+// BREAKPOINTS
+// ================================
+
+$mobile: 576px;
+$tablet: 768px;
+$laptop: 1024px;
+$desktop: 1280px;

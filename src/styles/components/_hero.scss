@@ -1,0 +1,153 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+@keyframes floatImage {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+header {
+  // min-height: 100vh;
+
+  display: grid;
+  align-items: center;
+  gap: 4rem;
+
+  // padding-top: 8rem;
+}
+
+.header__img {
+  display: flex;
+  justify-content: center;
+
+  img {
+    max-width: 550px;
+    width: 100%;
+
+    margin-inline: auto;
+
+    animation: floatImage 5s ease-in-out infinite;
+
+    transition:
+      transform 0.5s ease,
+      filter 0.5s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.header__content {
+  text-align: center;
+
+  h1 {
+    margin-bottom: 1.5rem;
+
+    font-size: 2.75rem;
+    // font-weight: 800;
+
+    line-height: 1.15;
+
+    background: linear-gradient(
+      135deg,
+      $primary-color,
+      $primary-color-dark
+    );
+
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section__description {
+    max-width: 650px;
+
+    margin-inline: auto;
+    margin-bottom: 2rem;
+
+    font-size: 1.05rem;
+    line-height: 1.9;
+  }
+}
+
+.header__links {
+  @include flex-center;
+
+  gap: 1rem;
+
+  li {
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+
+  img {
+    width: 150px;
+
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    border-radius: 14px;
+
+    &:hover {
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+@include tablet {
+  header {
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+
+  .header__content {
+    text-align: left;
+
+    h1 {
+      font-size: 4.5rem;
+    }
+
+    .section__description {
+      margin-inline: 0;
+    }
+  }
+
+  .header__links {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .header__img {
+    img {
+      max-width: 420px;
+    }
+  }
+
+  .header__content {
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+
+  .header__links {
+    img {
+      width: 130px;
+    }
+  }
+}

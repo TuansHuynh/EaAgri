@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+body {
+  font-family: "Poppins", sans-serif;
+  color: $text-dark;
+  background-color: $white;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+p {
+  line-height: 1.75rem;
+}
+
+.section__header {
+  margin-bottom: 1rem;
+
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+
+  color: $text-dark;
+}
+
+.section__description {
+  color: $text-light;
+  line-height: 1.8;
+}
+
+@include tablet {
+  .section__header {
+    font-size: 3rem;
+  }
+}
