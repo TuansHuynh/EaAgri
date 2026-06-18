@@ -37,9 +37,6 @@ const features: FeatureItem[] = [
   },
 ];
 
-const leftColumn = [features[0], features[2], features[4]];
-const rightColumn = [features[1], features[3]];
-
 const FeatureGrid = () => {
   return (
     <section className="section__container feature__container">
