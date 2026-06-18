@@ -68,6 +68,25 @@ const Footer = () => {
             </li>
           </ul>
         </div>
+        <ul className="header__links">
+          <li>
+            <a href="#">
+              <img
+                src="/assets/apple.png"
+                alt="App Store"
+              />
+            </a>
+          </li>
+
+          <li>
+            <a href="#">
+              <img
+                src="/assets/google.png"
+                alt="Google Play"
+              />
+            </a>
+          </li>
+        </ul>
       </div>
 
       <div className="footer__bar">
