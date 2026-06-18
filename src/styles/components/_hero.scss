@@ -21,8 +21,7 @@ header {
   display: grid;
   align-items: center;
   gap: 4rem;
-
-  // padding-top: 8rem;
+  padding: 7rem 0;
 }
 
 .header__img {
@@ -113,6 +112,7 @@ header {
   header {
     grid-template-columns: 1fr 1fr;
     gap: 5rem;
+    padding-top: 8.5rem;
   }
 
   .header__content {

@@ -59,7 +59,8 @@ const Footer = () => {
 
             <li>
               <a
-                href="https://github.com/DangwHuy/daklakagent"
+                // href="https://github.com/DangwHuy/daklakagent"
+                href="https://github.com/TuansHuynh/EaAgri"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -70,7 +71,7 @@ const Footer = () => {
         </div>
         <ul className="header__links">
           <li>
-            <a href="#">
+            <a href="##">
               <img
                 src="/assets/apple.png"
                 alt="App Store"
@@ -79,7 +80,7 @@ const Footer = () => {
           </li>
 
           <li>
-            <a href="#">
+            <a href="##">
               <img
                 src="/assets/google.png"
                 alt="Google Play"

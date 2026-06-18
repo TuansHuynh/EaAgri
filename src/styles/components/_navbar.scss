@@ -2,9 +2,11 @@
 @use "../abstracts/mixins" as *;
 
 nav {
-  // position: fixed;
+  position: fixed;
+  display: flex;
   // top: 0;
   // left: 50%;
+  background-color: rgba(243, 255, 242, 0.697);
 
   width: 100%;
   // max-width: $max-width;
