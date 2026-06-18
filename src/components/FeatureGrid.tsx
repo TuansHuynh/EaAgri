@@ -58,7 +58,7 @@ const FeatureGrid = () => {
         Các nền tảng kỹ thuật hỗ trợ dự án vận hành ổn định.
       </p>
 
-      <div className="feature__columns">
+      {/* <div className="feature__columns">
         <div className="feature__column">
           {leftColumn.map((feature, index) => (
             <div
@@ -94,6 +94,24 @@ const FeatureGrid = () => {
             </div>
           ))}
         </div>
+      </div> */}
+      <div className="feature__grid">
+        {features.map((feature, index) => (
+          <div
+            key={feature.id}
+            className="feature__card"
+            data-aos={
+              index % 2 === 0 ? "fade-right" : "fade-left"
+            }
+          >
+            <span>{feature.id}</span>
+
+            <div>
+              <h4>{feature.title}</h4>
+              <p>{feature.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

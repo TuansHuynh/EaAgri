@@ -1,94 +1,360 @@
+// @use "../abstracts/variables" as *;
+// @use "../abstracts/mixins" as *;
+
+// .feature__container {
+//   text-align: center;
+// }
+
+// .feature__columns {
+//   display: grid;
+//   grid-template-columns: repeat(2, 1fr);
+
+//   gap: 2rem;
+
+//   margin-top: 4rem;
+// }
+
+// .feature__column {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 2rem;
+// }
+
+// .feature__card {
+//   display: flex;
+//   gap: 1.25rem;
+
+//   padding: 1.75rem;
+
+//   text-align: left;
+
+//   background: $white;
+
+//   border-radius: $radius-lg;
+
+//   box-shadow: $shadow-md;
+
+//   transition:
+//     transform 0.3s ease,
+//     box-shadow 0.3s ease;
+
+//   &:hover {
+//     transform: translateY(-8px);
+
+//     box-shadow: $shadow-lg;
+//   }
+
+//   span {
+//     flex-shrink: 0;
+
+//     font-size: 3rem;
+//     font-weight: 800;
+
+//     line-height: 1;
+
+//     color: rgba($primary-color, 0.25);
+//   }
+
+//   h4 {
+//     margin-bottom: 0.75rem;
+
+//     font-size: 1.2rem;
+
+//     color: $text-dark;
+//   }
+
+//   p {
+//     color: $text-light;
+//     line-height: 1.8;
+//   }
+// }
+
+// .feature__column:first-child {
+//   margin-top: 0;
+// }
+
+// .feature__column:last-child {
+//   margin-top: 5rem;
+// }
+
+// @media (max-width: 768px) {
+//   .feature__columns {
+//     grid-template-columns: 1fr;
+//   }
+
+//   .feature__column:last-child {
+//     margin-top: 0;
+//   }
+
+//   .feature__card {
+//     span {
+//       font-size: 2.5rem;
+//     }
+//   }
+// }
+
+// @use "../abstracts/variables" as *;
+// @use "../abstracts/mixins" as *;
+
+// .feature__container {
+//   text-align: center;
+// }
+
+// // ================================
+// // MOBILE
+// // ================================
+
+// .feature__columns {
+//   display: grid;
+//   grid-template-columns: 1fr;
+
+//   gap: 3rem;
+
+//   margin-top: 4rem;
+// }
+
+// .feature__column {
+//   display: flex;
+//   flex-direction: column;
+
+//   gap: 3rem;
+// }
+
+// .feature__card {
+//   display: flex;
+//   align-items: flex-start;
+
+//   gap: 1rem;
+
+//   text-align: left;
+
+//   transition: transform 0.3s ease;
+
+//   &:hover {
+//     transform: translateY(-5px);
+//   }
+
+//   span {
+//     flex-shrink: 0;
+
+//     font-size: 3.5rem;
+//     font-weight: 900;
+
+//     line-height: 1;
+
+//     color: $primary-color;
+
+//     text-shadow: 2px 2px 0 rgba($primary-color-dark, 0.5);
+//   }
+
+//   h4 {
+//     margin-bottom: 0.5rem;
+
+//     font-size: 1.3rem;
+//     font-weight: 700;
+
+//     color: $text-dark;
+//   }
+
+//   p {
+//     line-height: 1.7;
+
+//     color: $text-light;
+//   }
+// }
+
+
+// // ================================
+// // TABLET
+// // ================================
+
+// @include tablet {
+//   .feature__columns {
+//     grid-template-columns: repeat(2, 1fr);
+
+//     gap: 5rem;
+//   }
+
+//   .feature__column {
+//     gap: 4rem;
+//   }
+
+//   // Tạo hiệu ứng cột phải thấp hơn giống ảnh
+//   .feature__column:last-child {
+//     margin-top: 4rem;
+//   }
+
+//   .feature__card {
+//     gap: 1.5rem;
+
+//     span {
+//       font-size: 4.5rem;
+//     }
+
+//     h4 {
+//       font-size: 1.6rem;
+//     }
+
+//     p {
+//       font-size: 1.05rem;
+//     }
+//   }
+// }
+
+
+// // ================================
+// // LAPTOP
+// // ================================
+
+// @include laptop {
+//   .feature__columns {
+//     gap: 8rem;
+//   }
+
+//   .feature__column:last-child {
+//     margin-top: 5rem;
+//   }
+
+//   .feature__card {
+//     span {
+//       font-size: 5rem;
+//     }
+
+//     h4 {
+//       font-size: 1.8rem;
+//     }
+
+//     p {
+//       font-size: 1.15rem;
+//       line-height: 1.8;
+//     }
+//   }
+// }
+
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
+
+// ================================
+// CONTAINER
+// ================================
 
 .feature__container {
   text-align: center;
 }
 
-.feature__columns {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+// ================================
+// GRID
+// ================================
 
-  gap: 2rem;
+.feature__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  gap: 3rem;
 
   margin-top: 4rem;
 }
 
-.feature__column {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+// ================================
+// CARD
+// ================================
 
 .feature__card {
   display: flex;
-  gap: 1.25rem;
+  align-items: flex-start;
 
-  padding: 1.75rem;
+  gap: 1rem;
 
   text-align: left;
 
-  background: $white;
-
-  border-radius: $radius-lg;
-
-  box-shadow: $shadow-md;
-
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
 
   &:hover {
-    transform: translateY(-8px);
-
-    box-shadow: $shadow-lg;
+    transform: translateY(-5px);
   }
 
   span {
     flex-shrink: 0;
 
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 3.5rem;
+    font-weight: 900;
 
     line-height: 1;
 
-    color: rgba($primary-color, 0.25);
+    color: $primary-color;
+
+    text-shadow: 2px 2px 0 rgba($primary-color-dark, 0.5);
   }
 
   h4 {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
 
     color: $text-dark;
   }
 
   p {
-    color: $text-light;
     line-height: 1.8;
+
+    color: $text-light;
   }
 }
 
-.feature__column:first-child {
-  margin-top: 0;
-}
+// ================================
+// TABLET
+// ================================
 
-.feature__column:last-child {
-  margin-top: 5rem;
-}
+@include tablet {
+  .feature__grid {
+    grid-template-columns: repeat(2, 1fr);
 
-@media (max-width: 768px) {
-  .feature__columns {
-    grid-template-columns: 1fr;
+    gap: 4rem 5rem;
   }
 
-  .feature__column:last-child {
-    margin-top: 0;
+  // Tạo hiệu ứng lệch cột giống thiết kế
+  .feature__card:nth-child(even) {
+    margin-top: 4rem;
   }
 
   .feature__card {
     span {
-      font-size: 2.5rem;
+      font-size: 4.5rem;
+    }
+
+    h4 {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ================================
+// LAPTOP
+// ================================
+
+@include laptop {
+  .feature__grid {
+    gap: 5rem 7rem;
+  }
+
+  .feature__card:nth-child(even) {
+    margin-top: 5rem;
+  }
+
+  .feature__card {
+    gap: 1.5rem;
+
+    span {
+      font-size: 5rem;
+    }
+
+    h4 {
+      font-size: 1.8rem;
+    }
+
+    p {
+      font-size: 1.05rem;
     }
   }
 }
