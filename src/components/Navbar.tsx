@@ -13,6 +13,10 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const handleHome = () => {
+    navigate("/")
+  }
+
   return (
     <nav data-aos="fade-down">
       <div className="nav__logo" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
@@ -23,6 +27,11 @@ const Navbar = () => {
       </div>
 
       <div className="nav__btns">
+        
+        <div onClick={handleHome}>
+          <button className="btn">Trang chủ</button>
+        </div>
+
         {/* News Button */}
         <button className="btn" onClick={handleNew}>
           <span>
@@ -32,7 +41,7 @@ const Navbar = () => {
         </button>
 
         {/* Demo Button */}
-        <a
+        {/* <a
           href="https://www.youtube.com/watch?v=QgVPizuOCdg"
           target="_blank"
           rel="noopener noreferrer"
@@ -44,7 +53,7 @@ const Navbar = () => {
             </span>
             <span>Xem Demo</span>
           </button>
-        </a>
+        </a> */}
 
         {/* Conditionally render admin/auth controls */}
         {user ? (
