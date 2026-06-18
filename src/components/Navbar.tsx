@@ -1,9 +1,9 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { user, profile, signOut, authError } = useAuth();
+  const { user, profile, signOut } = useAuth();
 
   const handleNew = () => {
     navigate("/news");
