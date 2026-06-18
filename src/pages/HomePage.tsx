@@ -1,5 +1,5 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+// import Navbar from "../components/Navbar";
+// import Footer from "../components/Footer";
 import Hero from "../components/Hero";
 import TeamSection from "../components/TeamSection";
 import StorySection from "../components/StorySection";
@@ -12,7 +12,8 @@ import StoryFeatureSection from "../components/StoryFeatureSection";
 export default function HomePage() {
     return (
         <>
-            <Navbar />
+        {/* Thêm thông tin chi tiết cho sản phẩm bằng cách nhấn vào hình ảnh, các hình phải liên quan với nhau */}
+            {/* <Navbar /> */}
             <Hero />
             <TeamSection />
             <StorySection
@@ -175,7 +176,7 @@ export default function HomePage() {
             <FeatureGrid />
             <ResultSection />
             <RoadmapSection />
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }

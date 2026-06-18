@@ -52,7 +52,7 @@ const Footer = () => {
             </li>
 
             <li>
-              <a href="#">
+              <a href="https://www.facebook.com/profile.php?id=61577351045350">
                 <i className="ri-facebook-fill"></i>
               </a>
             </li>

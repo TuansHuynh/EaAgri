@@ -1,0 +1,225 @@
+import React, { useEffect, useState } from "react";
+import { supabase } from "../utils/supabase/client";
+
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  author: string;
+  category: string;
+  image_url: string | null;
+  created_at: string;
+}
+
+export default function NewsList() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedArticle, setSelectedArticle] = useState<NewsItem | null>(null);
+
+  const categories = [
+    "Tất cả",
+    "Kỹ thuật",
+    "Tin tức",
+    "Thị trường",
+    "Thời tiết",
+    "Sinh học",
+    "Bền vững"
+  ];
+
+  // Fetch articles from Supabase on mount
+  useEffect(() => {
+    const fetchNews = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("news")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setNews(data as NewsItem[] || []);
+      } catch (err) {
+        console.error("Error fetching news:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  // Filter logic
+  const filteredNews = news.filter((item) => {
+    const matchesCategory =
+      selectedCategory === "Tất cả" || item.category === selectedCategory;
+    const matchesSearch =
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.author.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    };
+    return new Date(dateString).toLocaleDateString("vi-VN", options);
+  };
+
+  return (
+    <section className="news-list">
+      <div className="news-list__container">
+
+        {/* Header */}
+        <div className="news-list__header" data-aos="fade-up">
+          <h1>Bản Tin Nông Nghiệp</h1>
+          <p>Cập nhật kỹ thuật canh tác, thông tin thị trường và thời tiết mới nhất</p>
+        </div>
+
+        {/* Search & Category Filter Toolbar */}
+        <div className="news-list__toolbar" data-aos="fade-up" data-aos-delay="100">
+
+          {/* Search Box */}
+          <div className="news-list__search">
+            <i className="ri-search-line"></i>
+            <input
+              type="text"
+              placeholder="Tìm kiếm bài viết..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Categories Horizontal List */}
+          <div className="news-list__categories">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                className={selectedCategory === cat ? "active" : ""}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+        </div>
+
+        {/* News Grid */}
+        {loading ? (
+          <div className="news-list__loading">
+            <div className="spinner"></div>
+            <p>Đang tải các bài viết...</p>
+          </div>
+        ) : filteredNews.length === 0 ? (
+          <div className="news-list__empty" data-aos="fade-up">
+            <i className="ri-inbox-archive-line"></i>
+            <h3>Không tìm thấy bài viết nào</h3>
+            <p>Hãy thử thay đổi từ khóa tìm kiếm hoặc danh mục lọc của bạn.</p>
+          </div>
+        ) : (
+          <div className="news-list__grid">
+            {filteredNews.map((item, index) => (
+              <article
+                key={item.id}
+                className="news-list__card"
+                data-aos="fade-up"
+                data-aos-delay={index * 50}
+              >
+                {/* Card Image */}
+                <div className="news-list__card-image-wrapper">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt={item.title} />
+                  ) : (
+                    <div className="placeholder">
+                      <i className="ri-image-line"></i>
+                      <span>EaAgri News</span>
+                    </div>
+                  )}
+                  <span className="news-list__card-badge">{item.category}</span>
+                </div>
+
+                {/* Card Content */}
+                <div className="news-list__card-content">
+                  {/* Meta data */}
+                  <div className="news-list__card-meta">
+                    <span>
+                      <i className="ri-user-3-line"></i> {item.author}
+                    </span>
+                    <span>
+                      <i className="ri-calendar-line"></i> {formatDate(item.created_at)}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="news-list__card-title">{item.title}</h2>
+
+                  {/* Snippet */}
+                  <p className="news-list__card-snippet">{item.content}</p>
+
+                  {/* Card Footer Actions */}
+                  <div className="news-list__card-footer">
+                    <button
+                      className="news-list__read-more"
+                      onClick={() => setSelectedArticle(item)}
+                    >
+                      <span>Xem tiếp</span>
+                      <i className="ri-arrow-right-line"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+      </div>
+
+      {/* Article Detail Modal */}
+      {selectedArticle && (
+        <div className="article-modal">
+          <div className="article-modal__overlay" onClick={() => setSelectedArticle(null)}></div>
+          <div className="article-modal__card">
+
+            {/* Close Button */}
+            <button className="article-modal__close" onClick={() => setSelectedArticle(null)}>
+              <i className="ri-close-line"></i>
+            </button>
+
+            {/* Modal Image */}
+            {selectedArticle.image_url && (
+              <div className="article-modal__hero">
+                <img src={selectedArticle.image_url} alt={selectedArticle.title} />
+              </div>
+            )}
+
+            {/* Modal Content */}
+            <div className="article-modal__body">
+              <span className="article-modal__badge">{selectedArticle.category}</span>
+              <h2 className="article-modal__title">{selectedArticle.title}</h2>
+
+              <div className="article-modal__meta">
+                <span>
+                  <i className="ri-user-3-line"></i> Tác giả: <strong>{selectedArticle.author}</strong>
+                </span>
+                <span>
+                  <i className="ri-calendar-line"></i> Ngày đăng: <strong>{formatDate(selectedArticle.created_at)}</strong>
+                </span>
+              </div>
+
+              <div className="article-modal__content">
+                {selectedArticle.content}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}

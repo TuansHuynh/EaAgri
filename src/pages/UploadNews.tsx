@@ -1,0 +1,391 @@
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../utils/supabase/client";
+import { useAuth } from "../context/AuthContext";
+
+interface AlertState {
+  type: "success" | "error" | null;
+  message: string;
+}
+
+export default function UploadNews() {
+  const { user, profile, loading: authLoading } = useAuth();
+  
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [category, setCategory] = useState("Kỹ thuật");
+  const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  
+  // File upload state
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState<AlertState>({ type: null, message: "" });
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  if (authLoading) {
+    return (
+      <section className="upload-news">
+        <div className="news-list__loading">
+          <div className="spinner"></div>
+          <p>Đang kiểm tra quyền truy cập...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!user || profile?.role !== "SA") {
+    return (
+      <section className="ac-mgmt" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <div className="ac-mgmt__unauthorized" data-aos="fade-up">
+          <i className="ri-shield-keyhole-line"></i>
+          <h2>Truy Cập Bị Từ Chối</h2>
+          <p>Trang này chỉ dành riêng cho tài khoản Super Admin (SA) để viết bài. Vui lòng đăng nhập với tài khoản có thẩm quyền hoặc quay lại trang chủ.</p>
+          <Link to="/" className="btn">
+            <i className="ri-home-4-line"></i>
+            Quay về Trang chủ
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  const categories = [
+    "Kỹ thuật",
+    "Tin tức",
+    "Thị trường",
+    "Thời tiết",
+    "Sinh học",
+    "Bền vững"
+  ];
+
+  // Handle image file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Limit file size to 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        setAlert({
+          type: "error",
+          message: "Kích thước ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB."
+        });
+        return;
+      }
+      
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      // Clear manual image URL when local file is chosen
+      setImageUrl("");
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith("image/")) {
+        if (file.size > 5 * 1024 * 1024) {
+          setAlert({
+            type: "error",
+            message: "Kích thước ảnh quá lớn. Vui lòng chọn ảnh nhỏ hơn 5MB."
+          });
+          return;
+        }
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+        setImageUrl("");
+      } else {
+        setAlert({
+          type: "error",
+          message: "Định dạng file không hợp lệ. Vui lòng chọn một file ảnh."
+        });
+      }
+    }
+  };
+
+  const removeSelectedImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validations
+    if (!title.trim()) {
+      setAlert({ type: "error", message: "Vui lòng nhập tiêu đề bài viết." });
+      return;
+    }
+    if (!author.trim()) {
+      setAlert({ type: "error", message: "Vui lòng nhập tên tác giả." });
+      return;
+    }
+    if (!content.trim()) {
+      setAlert({ type: "error", message: "Vui lòng nhập nội dung bài viết." });
+      return;
+    }
+
+    setIsLoading(true);
+    setAlert({ type: null, message: "" });
+
+    try {
+      let finalImageUrl = imageUrl.trim();
+
+      // 1. Upload local file if selected
+      if (imageFile) {
+        // Generate a unique filename: timestamp + sanitized original name
+        const cleanFileName = imageFile.name.replace(/[^\w.-]/g, "_");
+        const fileName = `${Date.now()}-${cleanFileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("news-images")
+          .upload(fileName, imageFile, {
+            cacheControl: "3600",
+            upsert: false
+          });
+
+        if (uploadError) {
+          console.error("Storage upload error details:", uploadError);
+          throw new Error(
+            `Không thể tải ảnh lên Storage: ${uploadError.message}. Hãy chắc chắn rằng bạn đã tạo bucket 'news-images' ở chế độ Public trong Supabase.`
+          );
+        }
+
+        // Get public URL
+        const { data } = supabase.storage.from("news-images").getPublicUrl(fileName);
+        finalImageUrl = data.publicUrl;
+      }
+
+      // 2. Insert post metadata to database
+      const { error: insertError } = await supabase.from("news").insert([
+        {
+          title: title.trim(),
+          content: content.trim(),
+          author: author.trim(),
+          category,
+          image_url: finalImageUrl || null
+        }
+      ]);
+
+      if (insertError) {
+        console.error("Database insert error details:", insertError);
+        throw new Error(`Lưu bài viết thất bại: ${insertError.message}`);
+      }
+
+      // Success Reset
+      setAlert({
+        type: "success",
+        message: "Chúc mừng! Bài viết của bạn đã được đăng thành công lên hệ thống."
+      });
+      setTitle("");
+      setAuthor("");
+      setCategory("Kỹ thuật");
+      setContent("");
+      setImageUrl("");
+      setImageFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (err: any) {
+      setAlert({
+        type: "error",
+        message: err.message || "Đã xảy ra lỗi không xác định."
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <section className="upload-news">
+      <div className="upload-news__container">
+        
+        {/* Back Link */}
+        <Link to="/" className="upload-news__back">
+          <i className="ri-arrow-left-line"></i>
+          Quay lại Trang chủ
+        </Link>
+
+        {/* Header Title */}
+        <div className="upload-news__header" data-aos="fade-up">
+          <h1>Đăng Bài Viết Mới</h1>
+          <p>Chia sẻ kiến thức, tin tức nông nghiệp và dự báo thị trường cho bà con nông dân EaAgri</p>
+        </div>
+
+        {/* Form Container */}
+        <div className="upload-news__card" data-aos="fade-up" data-aos-delay="100">
+          
+          {/* Status Alert */}
+          {alert.type && (
+            <div style={{ marginBottom: "2rem" }}>
+              <div className={`upload-news__alert upload-news__alert--${alert.type}`}>
+                <i className={alert.type === "success" ? "ri-checkbox-circle-line" : "ri-error-warning-line"}></i>
+                <span>{alert.message}</span>
+              </div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="upload-news__form">
+            
+            {/* Left Column: Media Upload */}
+            <div className="upload-news__media-section">
+              <span className="upload-news__upload-label">Ảnh bìa bài viết</span>
+              
+              <div 
+                className={`upload-news__dropzone ${imagePreview ? "upload-news__dropzone--has-file" : ""}`}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => !imagePreview && fileInputRef.current?.click()}
+              >
+                <input 
+                  type="file" 
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                
+                {imagePreview ? (
+                  <div className="upload-news__preview-wrapper">
+                    <img src={imagePreview} alt="Preview" className="upload-news__preview" />
+                    <button className="upload-news__remove-file" onClick={removeSelectedImage} title="Xóa ảnh">
+                      <i className="ri-close-line"></i>
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <i className="ri-image-add-line"></i>
+                    <span>Kéo thả ảnh vào đây hoặc nhấp để chọn</span>
+                    <small>Chấp nhận định dạng JPG, PNG, WEBP (Tối đa 5MB)</small>
+                  </>
+                )}
+              </div>
+
+              {/* Alternative: Image URL Input */}
+              <div className="upload-news__url-input-group">
+                <div className="divider">Hoặc nhập link ảnh trực tiếp</div>
+                <div className="upload-news__group">
+                  <input
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    className="upload-news__input"
+                    value={imageUrl}
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      // Clear local file states when link is manually entered
+                      setImageFile(null);
+                      setImagePreview(null);
+                    }}
+                    disabled={imagePreview !== null}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Form Inputs */}
+            <div className="upload-news__fields-section">
+              
+              {/* Title */}
+              <div className="upload-news__group">
+                <label htmlFor="title">Tiêu đề bài viết <span style={{ color: "#c62828" }}>*</span></label>
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Nhập tiêu đề chính..."
+                  className="upload-news__input"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Row Grid for Author & Category */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+                
+                {/* Author */}
+                <div className="upload-news__group">
+                  <label htmlFor="author">Tác giả <span style={{ color: "#c62828" }}>*</span></label>
+                  <input
+                    type="text"
+                    id="author"
+                    placeholder="Tên người viết..."
+                    className="upload-news__input"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* Category */}
+                <div className="upload-news__group">
+                  <label htmlFor="category">Danh mục</label>
+                  <select
+                    id="category"
+                    className="upload-news__select"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+              </div>
+
+              {/* Content / Body */}
+              <div className="upload-news__group">
+                <label htmlFor="content">Nội dung chi tiết <span style={{ color: "#c62828" }}>*</span></label>
+                <textarea
+                  id="content"
+                  placeholder="Viết nội dung bài chia sẻ của bạn vào đây..."
+                  className="upload-news__textarea"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button 
+                type="submit" 
+                className="upload-news__submit" 
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="upload-news__spinner"></div>
+                    <span>Đang đăng bài...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="ri-send-plane-fill"></i>
+                    <span>Đăng bài viết</span>
+                  </>
+                )}
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </section>
+  );
+}

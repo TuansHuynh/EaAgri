@@ -1,9 +1,11 @@
-// import { Outlet } from "react-router-dom"
 import { useEffect } from "react";
-import HomePage from "./pages/HomePage";
 import "./styles/main.scss";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   
@@ -16,7 +18,13 @@ function App() {
     });
   }, []);
   
-  return <HomePage />;
+  return (
+    <AuthProvider>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </AuthProvider>
+  );
   
 }
 
