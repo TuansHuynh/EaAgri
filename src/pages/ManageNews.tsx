@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, 
+  // useNavigate
+ } from "react-router-dom";
 import { supabase } from "../utils/supabase/client";
 import { useAuth } from "../context/AuthContext";
 
@@ -20,7 +22,7 @@ interface AlertState {
 
 export default function ManageNews() {
   const { user, profile, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // News list states
   const [news, setNews] = useState<NewsItem[]>([]);
