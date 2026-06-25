@@ -60,11 +60,11 @@ const Navbar = () => {
           <>
             {profile?.role === "SA" && (
               <>
-                <button className="btn btn--admin" onClick={() => navigate("/news/create")}>
+                <button className="btn btn--admin" onClick={() => navigate("/admin/news")}>
                   <span>
-                    <i className="ri-edit-box-line"></i>
+                    <i className="ri-article-line"></i>
                   </span>
-                  <span>Đăng bài</span>
+                  <span>Quản lý bài</span>
                 </button>
                 <button className="btn btn--admin" onClick={() => navigate("/admin/accounts")}>
                   <span>
