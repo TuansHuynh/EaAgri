@@ -49,7 +49,7 @@ body {
 
   gap: 0.6rem;
 
-  padding: 1rem 1.75rem;
+  padding: 0.5rem 0.5rem;
 
   font-size: 0.95rem;
   font-weight: 600;
@@ -99,10 +99,10 @@ section {
   background: #f3f7f3;
 }
 
-::-webkit-scrollbar-thumb {
-  background: $primary-color;
-  border-radius: 999px;
-}
+// ::-webkit-scrollbar-thumb {
+//   background: $primary-color;
+//   border-radius: 999px;
+// }
 
 ::-webkit-scrollbar-thumb:hover {
   background: $primary-color-dark;

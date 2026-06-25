@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../utils/supabase/client";
+import { useAuth } from "../context/AuthContext";
 
 interface NewsItem {
   id: string;
@@ -16,7 +18,8 @@ export default function NewsList() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedArticle, setSelectedArticle] = useState<NewsItem | null>(null);
+  const { profile } = useAuth();
+  const isSA = profile?.role === "SA";
 
   const categories = [
     "Tất cả",
@@ -49,6 +52,30 @@ export default function NewsList() {
 
     fetchNews();
   }, []);
+
+  // Delete article handler for SA
+  const handleDelete = async (id: string, title: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const confirmDelete = window.confirm(`Bạn có chắc chắn muốn xóa bài viết "${title}"? Hành động này không thể hoàn tác.`);
+    if (!confirmDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("news")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setNews((prevNews) => prevNews.filter((item) => item.id !== id));
+      alert("Xóa bài viết thành công!");
+    } catch (err: any) {
+      console.error("Error deleting article:", err);
+      alert("Đã xảy ra lỗi khi xóa bài viết: " + (err.message || "Lỗi không xác định"));
+    }
+  };
 
   // Filter logic
   const filteredNews = news.filter((item) => {
@@ -132,7 +159,7 @@ export default function NewsList() {
                 data-aos-delay={index * 50}
               >
                 {/* Card Image */}
-                <div className="news-list__card-image-wrapper">
+                <Link to={`/news/${item.id}`} className="news-list__card-image-wrapper">
                   {item.image_url ? (
                     <img src={item.image_url} alt={item.title} />
                   ) : (
@@ -142,7 +169,7 @@ export default function NewsList() {
                     </div>
                   )}
                   <span className="news-list__card-badge">{item.category}</span>
-                </div>
+                </Link>
 
                 {/* Card Content */}
                 <div className="news-list__card-content">
@@ -157,20 +184,33 @@ export default function NewsList() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="news-list__card-title">{item.title}</h2>
+                  <Link to={`/news/${item.id}`} style={{ textDecoration: "none" }}>
+                    <h2 className="news-list__card-title">{item.title}</h2>
+                  </Link>
 
                   {/* Snippet */}
                   <p className="news-list__card-snippet">{item.content}</p>
 
                   {/* Card Footer Actions */}
                   <div className="news-list__card-footer">
-                    <button
+                    <Link
+                      to={`/news/${item.id}`}
                       className="news-list__read-more"
-                      onClick={() => setSelectedArticle(item)}
                     >
                       <span>Xem tiếp</span>
                       <i className="ri-arrow-right-line"></i>
-                    </button>
+                    </Link>
+
+                    {isSA && (
+                      <button
+                        onClick={(e) => handleDelete(item.id, item.title, e)}
+                        className="news-list__delete-btn"
+                        title="Xóa bài viết"
+                      >
+                        <i className="ri-delete-bin-line"></i>
+                        <span>Xóa</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -179,47 +219,6 @@ export default function NewsList() {
         )}
 
       </div>
-
-      {/* Article Detail Modal */}
-      {selectedArticle && (
-        <div className="article-modal">
-          <div className="article-modal__overlay" onClick={() => setSelectedArticle(null)}></div>
-          <div className="article-modal__card">
-
-            {/* Close Button */}
-            <button className="article-modal__close" onClick={() => setSelectedArticle(null)}>
-              <i className="ri-close-line"></i>
-            </button>
-
-            {/* Modal Image */}
-            {selectedArticle.image_url && (
-              <div className="article-modal__hero">
-                <img src={selectedArticle.image_url} alt={selectedArticle.title} />
-              </div>
-            )}
-
-            {/* Modal Content */}
-            <div className="article-modal__body">
-              <span className="article-modal__badge">{selectedArticle.category}</span>
-              <h2 className="article-modal__title">{selectedArticle.title}</h2>
-
-              <div className="article-modal__meta">
-                <span>
-                  <i className="ri-user-3-line"></i> Tác giả: <strong>{selectedArticle.author}</strong>
-                </span>
-                <span>
-                  <i className="ri-calendar-line"></i> Ngày đăng: <strong>{formatDate(selectedArticle.created_at)}</strong>
-                </span>
-              </div>
-
-              <div className="article-modal__content">
-                {selectedArticle.content}
-              </div>
-            </div>
-
-          </div>
-        </div>
-      )}
     </section>
   );
 }

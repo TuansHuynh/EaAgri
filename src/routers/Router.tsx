@@ -3,6 +3,7 @@ import App from "../App";
 import HomePage from "../pages/HomePage";
 import UploadNews from "../pages/UploadNews";
 import NewsList from "../pages/NewsList";
+import NewsDetail from "../pages/NewsDetail";
 import Login from "../pages/Login";
 import AccountManagement from "../pages/AccountManagement";
 
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/news", element: <NewsList /> },
+      { path: "/news/:id", element: <NewsDetail /> },
       { path: "/news/create", element: <UploadNews /> },
       { path: "/login", element: <Login /> },
       { path: "/admin/accounts", element: <AccountManagement /> }
