@@ -27,7 +27,7 @@ export default function ManageNews() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
-  const [alert, setAlert] = useState<AlertState>({ type: null, message: "" });
+  const [alertState, setAlertState] = useState<AlertState>({ type: null, message: "" });
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Modal states
@@ -73,7 +73,7 @@ export default function ManageNews() {
       setNews((data as NewsItem[]) || []);
     } catch (err: any) {
       console.error("Error fetching news:", err);
-      setAlert({
+      setAlertState({
         type: "error",
         message: `Không thể tải danh sách bài viết: ${err.message}`
       });
@@ -124,7 +124,7 @@ export default function ManageNews() {
     if (!confirmDelete) return;
 
     setDeletingId(id);
-    setAlert({ type: null, message: "" });
+    setAlertState({ type: null, message: "" });
     try {
       const { error } = await supabase
         .from("news")
@@ -134,13 +134,13 @@ export default function ManageNews() {
       if (error) throw error;
 
       setNews((prev) => prev.filter((item) => item.id !== id));
-      setAlert({
+      setAlertState({
         type: "success",
         message: "Xóa bài viết thành công!"
       });
     } catch (err: any) {
       console.error("Error deleting news:", err);
-      setAlert({
+      setAlertState({
         type: "error",
         message: `Xóa bài viết thất bại: ${err.message}`
       });
@@ -160,7 +160,7 @@ export default function ManageNews() {
     setFormImageUrl("");
     setFormImageFile(null);
     setFormImagePreview(null);
-    setAlert({ type: null, message: "" });
+    setAlertState({ type: null, message: "" });
     setIsModalOpen(true);
   };
 
@@ -176,7 +176,7 @@ export default function ManageNews() {
     setFormImageFile(null);
     // If there is an existing image URL, set it as preview
     setFormImagePreview(item.image_url);
-    setAlert({ type: null, message: "" });
+    setAlertState({ type: null, message: "" });
     setIsModalOpen(true);
   };
 
@@ -223,7 +223,7 @@ export default function ManageNews() {
     }
 
     setIsSaving(true);
-    setAlert({ type: null, message: "" });
+    setAlertState({ type: null, message: "" });
 
     try {
       let finalImageUrl = formImageUrl.trim();
@@ -276,7 +276,7 @@ export default function ManageNews() {
           fetchNews();
         }
 
-        setAlert({
+        setAlertState({
           type: "success",
           message: "Thêm bài viết mới thành công!"
         });
@@ -308,7 +308,7 @@ export default function ManageNews() {
           fetchNews();
         }
 
-        setAlert({
+        setAlertState({
           type: "success",
           message: "Cập nhật bài viết thành công!"
         });
@@ -363,10 +363,10 @@ export default function ManageNews() {
         <div className="manage-news__card" data-aos="fade-up" data-aos-delay="100">
           
           {/* Status Alert */}
-          {alert.type && (
-            <div className={`manage-news__alert manage-news__alert--${alert.type}`}>
-              <i className={alert.type === "success" ? "ri-checkbox-circle-line" : "ri-error-warning-line"}></i>
-              <span>{alert.message}</span>
+          {alertState.type && (
+            <div className={`manage-news__alert manage-news__alert--${alertState.type}`}>
+              <i className={alertState.type === "success" ? "ri-checkbox-circle-line" : "ri-error-warning-line"}></i>
+              <span>{alertState.message}</span>
             </div>
           )}
 
